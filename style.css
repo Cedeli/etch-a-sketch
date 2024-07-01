@@ -26,6 +26,7 @@ body {
     color: #f0ca89;
     font-size: 32px;
     margin-bottom: 16px;
+    text-shadow: 1px 1px #f0ca89, -1px -1px #ac4b78;
 }
 
 .panel {
@@ -35,6 +36,9 @@ body {
     background-color: #E85D75;
     padding: 32px 72px;
     border-radius: 16px;
+    border: solid;
+    border-color: #ac4b78;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 4px 12px;
 }
 
 .lower-panel {
@@ -48,6 +52,10 @@ body {
     height: 64px;
     width: 64px;
     border-radius: 32px;
+    border: solid;
+    border-color: #8D918B;
+    border-width: 1px;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 4px 12px;
 }
 
 .knob-right {
@@ -64,6 +72,7 @@ body {
     width: 512px;
     height: 512px;
     background-color: #c8cfc4;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 4px 12px inset;
 }
 
 .drawn {

@@ -1,8 +1,8 @@
 const canvas = document.querySelector(".canvas");
 
 let mouseDown = false
-document.body.onmousedown = () => (mouseDown = true)
-document.body.onmouseup = () => (mouseDown = false)
+window.addEventListener('mousedown', () => mouseDown = true);
+window.addEventListener('mouseup', () => mouseDown = false);
 
 function createGrid(canvas, cellAmount) {
     const cellSize = canvas.clientHeight / cellAmount;
@@ -11,21 +11,22 @@ function createGrid(canvas, cellAmount) {
         const cell = document.createElement("div");
         cell.style.height = `${cellSize}px`;
         cell.style.width = `${cellSize}px`;
-        cell.style.border = "solid";
-        cell.style.borderWidth = "1px";
-        cell.style.borderColor = "#8D918B";
 
-        createHoverEvent(cell);
+        createCellEvents(cell);
         canvas.appendChild(cell);
     }
 }
 
-function createHoverEvent(element) {
-    element.addEventListener("mouseover", () => {
-        if (!mouseDown || element.classList.contains("drawn")) return;
-        element.classList.toggle("drawn");
-        console.log("Drawing");
-    });
+function createCellEvents(element) {
+    element.classList.toggle("cell");
+
+    element.addEventListener("mouseover", colorCell);
+    element.addEventListener("mousedown", colorCell);
+}
+
+function colorCell(e) {
+    if (e.type === "mouseover" && !mouseDown) return;
+    e.target.classList.toggle("drawn");
 }
 
 createGrid(canvas, 32);

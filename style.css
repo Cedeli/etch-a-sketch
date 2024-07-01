@@ -25,6 +25,7 @@ body {
 .title {
     color: #f0ca89;
     font-size: 32px;
+    user-select: none;
     margin-bottom: 16px;
     text-shadow: 1px 1px #f0ca89, -1px -1px #ac4b78;
 }

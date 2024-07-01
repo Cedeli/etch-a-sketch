@@ -11,6 +11,17 @@ function createGrid(canvas, cellAmount) {
         const cell = document.createElement("div");
         cell.style.height = `${cellSize}px`;
         cell.style.width = `${cellSize}px`;
+        cell.style.cursor = "crosshair";
+
+        if (i === 0){
+            cell.style.borderTopLeftRadius = "16px";
+        } else if(i === cellAmount - 1){
+            cell.style.borderTopRightRadius = "16px";
+        } else if(i === cellAmount * cellAmount - cellAmount){
+            cell.style.borderBottomLeftRadius = "16px";
+        } else if(i === cellAmount * cellAmount - 1){
+            cell.style.borderBottomRightRadius = "16px";
+        }
 
         createCellEvents(cell);
         canvas.appendChild(cell);
@@ -29,4 +40,4 @@ function colorCell(e) {
     e.target.classList.toggle("drawn");
 }
 
-createGrid(canvas, 32);
+createGrid(canvas, 16);

@@ -35,7 +35,7 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: #E85D75;
-    padding: 32px 72px;
+    padding: 32px 64px;
     border-radius: 16px;
     border: solid;
     border-color: #ac4b78;
@@ -44,15 +44,46 @@ body {
 
 .lower-panel {
     display: flex;
-    margin-top: 32px;
+    margin-top: 16px;
+}
+
+.grid-size {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.grid-size-label {
+    font-size: 24px;
+    color: #eaeee8;
+    text-shadow: 1px 1px #1d1c1d;
+}
+
+.grid-slider {
+    appearance: none;
+    width: 100%;
+    height: 16px;
+    margin-top: 8px;
+    background: #eaeee8;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 4px 12px inset;
+}
+  
+.grid-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px; 
+    background: #E85D75;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 4px 12px;
+    cursor: pointer;
 }
 
 .knob-left,
 .knob-right {
     background-color: #eaeee8;
-    height: 64px;
-    width: 64px;
-    border-radius: 32px;
+    height: 90px;
+    width: 90px;
+    border-radius: 64px;
     border: solid;
     border-color: #8D918B;
     border-width: 1px;
@@ -72,7 +103,8 @@ body {
     flex-wrap: wrap;
     width: 512px;
     height: 512px;
-    background-color: #c8cfc4;
+    border-radius: 16px;
+    background-color: #eaeee8;
     box-shadow: rgba(0, 0, 0, 0.5) 0 4px 12px inset;
 }
 

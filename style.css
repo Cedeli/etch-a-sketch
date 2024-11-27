@@ -1,6 +1,11 @@
 :root {
     font-family: "Roboto", sans-serif;
     scroll-behavior: smooth;
+    --primary-color: #E85D75;
+    --secondary-color: #ac4b78;
+    --background-color: #2f3f5f;
+    --text-color: #eaeee8;
+    --neutral-color: #8D918B;
 }
 
 *,
@@ -14,12 +19,13 @@
 }
 
 body {
-    display: flex; 
-    flex-direction: column; 
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #2f3f5f;
+    background-color: var(--background-color);
+    transition: background-color 0.3s ease;
 }
 
 .title {
@@ -27,24 +33,27 @@ body {
     font-size: 32px;
     user-select: none;
     margin-bottom: 16px;
-    text-shadow: 1px 1px #f0ca89, -1px -1px #ac4b78;
+    text-shadow: 1px 1px #f0ca89, -1px -1px var(--secondary-color);
+    text-align: center;
 }
 
 .panel {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #E85D75;
+    background-color: var(--primary-color);
     padding: 32px 64px;
     border-radius: 16px;
     border: solid;
-    border-color: #ac4b78;
+    border-color: var(--secondary-color);
     box-shadow: rgba(0, 0, 0, 0.5) 0 4px 12px;
 }
 
 .lower-panel {
     display: flex;
+    align-items: center;
     margin-top: 16px;
+    gap: 16px;
 }
 
 .grid-size {
@@ -56,7 +65,7 @@ body {
 
 .grid-size-label {
     font-size: 24px;
-    color: #eaeee8;
+    color: var(--text-color);
     text-shadow: 1px 1px #1d1c1d;
 }
 
@@ -65,37 +74,31 @@ body {
     width: 100%;
     height: 16px;
     margin-top: 8px;
-    background: #eaeee8;
+    background: var(--text-color);
     box-shadow: rgba(0, 0, 0, 0.5) 0 4px 12px inset;
+    border-radius: 8px;
 }
-  
+
 .grid-slider::-webkit-slider-thumb {
     appearance: none;
     width: 20px;
-    height: 20px; 
-    background: #E85D75;
+    height: 20px;
+    background: var(--primary-color);
     box-shadow: rgba(0, 0, 0, 0.5) 0 4px 12px;
     cursor: pointer;
+    border-radius: 50%;
 }
 
 .knob-left,
 .knob-right {
-    background-color: #eaeee8;
+    background-color: var(--text-color);
     height: 90px;
     width: 90px;
     border-radius: 64px;
     border: solid;
-    border-color: #8D918B;
+    border-color: var(--neutral-color);
     border-width: 1px;
     box-shadow: rgba(0, 0, 0, 0.5) 0 4px 12px;
-}
-
-.knob-right {
-    margin-right: 128px;
-}
-
-.knob-left {
-    margin-left: 128px;
 }
 
 .canvas {
@@ -104,10 +107,75 @@ body {
     width: 512px;
     height: 512px;
     border-radius: 16px;
-    background-color: #eaeee8;
+    background-color: var(--text-color);
     box-shadow: rgba(0, 0, 0, 0.5) 0 4px 12px inset;
 }
 
-.drawn {
-    background-color: #8D918B;
+.cell {
+    will-change: background-color;
+    transition: background-color 0.1s ease;
+}
+
+.sketch-button {
+    background-color: var(--text-color);
+    color: var(--primary-color);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.sketch-button:hover {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+.sketch-button.active {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    transform: scale(1.05);
+}
+
+.color-picker {
+    appearance: none;
+    width: 50px;
+    height: 50px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.color-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 4px 12px;
+}
+
+@media (max-width: 600px) {
+    .panel {
+        padding: 16px 32px;
+        width: 95%;
+    }
+
+    .canvas {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+    }
+
+    .lower-panel {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .knob-left, .knob-right {
+        display: none;
+    }
 }

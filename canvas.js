@@ -1,29 +1,49 @@
 const canvas = document.querySelector(".canvas");
+const slider = document.querySelector(".grid-slider");
+const sizeLabel = document.querySelector(".grid-size-label");
+const buttons = document.querySelectorAll(".sketch-button");
 
 let mouseDown = false;
-window.addEventListener('mousedown', () => mouseDown = true);
-window.addEventListener('mouseup', () => mouseDown = false);
+let drawingMode = "draw";
 
-let drawingMode = "rainbow";
+window.addEventListener("mousedown", () => (mouseDown = true));
+window.addEventListener("mouseup", () => (mouseDown = false));
+
+createGrid(canvas, parseInt(slider.value));
+
+buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+        drawingMode = button.textContent.toLowerCase();
+
+        if (drawingMode === "clear") {
+            clearGrid();
+            drawingMode = "draw";
+        }
+    });
+});
+
+slider.addEventListener("input", () => {
+    const gridSize = parseInt(slider.value);
+    sizeLabel.textContent = `${gridSize} x ${gridSize}`;
+    recreateGrid(gridSize);
+});
 
 function createGrid(canvas, cellAmount) {
+    canvas.innerHTML = "";
     const cellSize = canvas.clientHeight / cellAmount;
 
-    for (i = 0; i < cellAmount * cellAmount; i++) {
+    for (let i = 0; i < cellAmount * cellAmount; i++) {
         const cell = document.createElement("div");
         cell.style.height = `${cellSize}px`;
         cell.style.width = `${cellSize}px`;
         cell.style.cursor = "crosshair";
 
-        if (i === 0){
-            cell.style.borderTopLeftRadius = "16px";
-        } else if(i === cellAmount - 1){
-            cell.style.borderTopRightRadius = "16px";
-        } else if(i === cellAmount * cellAmount - cellAmount){
+        if (i === 0) cell.style.borderTopLeftRadius = "16px";
+        else if (i === cellAmount - 1) cell.style.borderTopRightRadius = "16px";
+        else if (i === cellAmount * cellAmount - cellAmount)
             cell.style.borderBottomLeftRadius = "16px";
-        } else if(i === cellAmount * cellAmount - 1){
+        else if (i === cellAmount * cellAmount - 1)
             cell.style.borderBottomRightRadius = "16px";
-        }
 
         createCellEvents(cell);
         canvas.appendChild(cell);
@@ -31,7 +51,7 @@ function createGrid(canvas, cellAmount) {
 }
 
 function createCellEvents(element) {
-    element.classList.toggle("cell");
+    element.classList.add("cell");
 
     element.addEventListener("mouseover", colorCell);
     element.addEventListener("mousedown", colorCell);
@@ -39,58 +59,56 @@ function createCellEvents(element) {
 
 function colorCell(e) {
     if (e.type === "mouseover" && !mouseDown) return;
+
     switch (drawingMode) {
         case "rainbow":
             e.target.style.backgroundColor = rainbow();
             break;
         case "darken":
-
+            darkenCell(e.target);
             break;
         default:
-            e.target.classList.toggle("drawn");
+            e.target.style.backgroundColor = "#8D918B";
             break;
     }
 }
 
 function rainbow() {
-    let hue = Math.floor(Math.random() * 30) * 12;
-    let color = "rgb(" + hsl2rgb(hue, 0.1, 0.1).join(",") + ")";
-    return color;
+    const hue = Math.floor(Math.random() * 360);
+    return `hsl(${hue}, 100%, 50%)`;
 }
 
-function hsl2rgb(h, s, l)
-{
-    h = h / 360;
-    s = s / 100;
-    l = l / 100;
+function darkenCell(element) {
+    let currentLevel = parseFloat(element.dataset.darkenLevel) || 0;
+    currentLevel = Math.min(currentLevel + 0.1, 1);
+    element.dataset.darkenLevel = currentLevel;
 
-    let r, g, b;
+    const baseColor = getComputedStyle(element).backgroundColor || "rgb(255, 255, 255)";
+    const [r, g, b] = extractRGB(baseColor);
 
-    if (s === 0) {
-        r = g = b = l;
-    } else {
-        const hue2rgb = (p, q, t) => {
-            if (t < 0) t += 1;
-            if (t > 1) t -= 1;
-            if (t < 1/6) return p + (q - p) * 6 * t;
-            if (t < 1/2) return q;
-            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-            return p;
-        };
+    const isTransparent = baseColor === "rgba(0, 0, 0, 0)" || baseColor === "transparent";
+    const [defaultR, defaultG, defaultB] = isTransparent ? [255, 255, 255] : [r, g, b];
 
-        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-        const p = 2 * 1 - q;
+    const newR = Math.round(defaultR * (1 - currentLevel));
+    const newG = Math.round(defaultG * (1 - currentLevel));
+    const newB = Math.round(defaultB * (1 - currentLevel));
 
-        r = hue2rgb(p, q, h + 1/3);
-        g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1/3);
+    element.style.backgroundColor = `rgb(${newR}, ${newG}, ${newB})`;
+}
+
+function extractRGB(color) {
+    const match = color.match(/(\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        return match.slice(1, 4).map(Number);
     }
-
-    r = Math.round(r * 255);
-    g = Math.round(g * 255);
-    b = Math.round(b * 255);
-
-    return [r, g, b];
+    return [255, 255, 255];
 }
 
-createGrid(canvas, 16);
+function clearGrid() {
+    const cells = document.querySelectorAll(".cell");
+    cells.forEach((cell) => (cell.style.backgroundColor = "transparent"));
+}
+
+function recreateGrid(cellAmount) {
+    createGrid(canvas, cellAmount);
+}

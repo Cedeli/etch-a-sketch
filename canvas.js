@@ -16,13 +16,24 @@ window.addEventListener("mouseup", () => {
 createGrid(canvas, parseInt(slider.value));
 
 buttons.forEach((button) => {
+    if (button.textContent.toLowerCase() === drawingMode) {
+        button.classList.add("active");
+    }
     button.addEventListener("click", () => {
-        drawingMode = button.textContent.toLowerCase();
-
-        if (drawingMode === "clear") {
+        const buttonMode = button.textContent.toLowerCase();
+        if (buttonMode === "clear") {
             clearGrid();
-            drawingMode = "draw";
+            return;
         }
+
+        buttons.forEach((btn) => {
+            if (btn.textContent.toLowerCase() !== "clear") {
+                btn.classList.remove("active");
+            }
+        });
+
+        button.classList.add("active");
+        drawingMode = buttonMode;
     });
 });
 
@@ -137,7 +148,7 @@ function fillCellsBetween(start, end, gridSize) {
 
 function rainbow() {
     const hue = Math.floor(Math.random() * 360);
-    return `hsl(${hue}, 100%, 50%)`;
+    return `hsl(${hue},70%, 50%)`;
 }
 
 function darkenCell(element) {

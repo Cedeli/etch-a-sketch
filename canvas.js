@@ -40,6 +40,10 @@ buttons.forEach((button) => {
 slider.addEventListener("input", () => {
     const gridSize = parseInt(slider.value);
     sizeLabel.textContent = `${gridSize} x ${gridSize}`;
+});
+
+slider.addEventListener("change", () => {
+    const gridSize = parseInt(slider.value);
     recreateGrid(gridSize);
 });
 

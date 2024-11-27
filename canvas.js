@@ -5,9 +5,13 @@ const buttons = document.querySelectorAll(".sketch-button");
 
 let mouseDown = false;
 let drawingMode = "draw";
+let lastCell = null;
 
 window.addEventListener("mousedown", () => (mouseDown = true));
-window.addEventListener("mouseup", () => (mouseDown = false));
+window.addEventListener("mouseup", () => {
+    mouseDown = false;
+    lastCell = null;
+});
 
 createGrid(canvas, parseInt(slider.value));
 
@@ -53,23 +57,81 @@ function createGrid(canvas, cellAmount) {
 function createCellEvents(element) {
     element.classList.add("cell");
 
-    element.addEventListener("mouseover", colorCell);
-    element.addEventListener("mousedown", colorCell);
+    element.addEventListener("mouseover", (e) => colorCell(e, element));
+    element.addEventListener("mousedown", (e) => colorCell(e, element));
 }
 
-function colorCell(e) {
+function colorCell(e, element) {
     if (e.type === "mouseover" && !mouseDown) return;
+    fillCell(element);
 
+    if (lastCell && lastCell !== element) {
+        const canvasRect = canvas.getBoundingClientRect();
+        const cells = Array.from(canvas.children);
+        const gridSize = Math.sqrt(cells.length);
+
+        const startCoords = getCellCoordinates(lastCell, canvasRect, gridSize);
+        const endCoords = getCellCoordinates(element, canvasRect, gridSize);
+
+        if (startCoords && endCoords) {
+            fillCellsBetween(startCoords, endCoords, gridSize);
+        }
+    }
+
+    lastCell = element;
+}
+
+function fillCell(element) {
     switch (drawingMode) {
         case "rainbow":
-            e.target.style.backgroundColor = rainbow();
+            element.style.backgroundColor = rainbow();
             break;
         case "darken":
-            darkenCell(e.target);
+            darkenCell(element);
             break;
         default:
-            e.target.style.backgroundColor = "#8D918B";
+            element.style.backgroundColor = "#8D918B";
             break;
+    }
+}
+
+function getCellCoordinates(cell, canvasRect, gridSize) {
+    const index = Array.from(canvas.children).indexOf(cell);
+    if (index === -1) return null;
+
+    const x = index % gridSize;
+    const y = Math.floor(index / gridSize);
+
+    return { x, y, index };
+}
+
+function fillCellsBetween(start, end, gridSize) {
+    const dx = Math.abs(end.x - start.x);
+    const dy = Math.abs(end.y - start.y);
+    const sx = start.x < end.x ? 1 : -1;
+    const sy = start.y < end.y ? 1 : -1;
+
+    let err = dx - dy;
+
+    let x = start.x;
+    let y = start.y;
+
+    while (true) {
+        const index = y * gridSize + x;
+        const cell = canvas.children[index];
+        if (cell) fillCell(cell);
+
+        if (x === end.x && y === end.y) break;
+
+        const e2 = 2 * err;
+        if (e2 > -dy) {
+            err -= dy;
+            x += sx;
+        }
+        if (e2 < dx) {
+            err += dx;
+            y += sy;
+        }
     }
 }
 
